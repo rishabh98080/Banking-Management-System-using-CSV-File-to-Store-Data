@@ -39,9 +39,9 @@ class Banking{
         case 2:BalanceDet();break;
         case 3:Withdraw();break;
         case 4:Deposit();break;
-        case 5:;break;
+        case 5:Update();break;
         case 6:create();break;
-        case 7:;break;
+        case 7:/*Delete()*/;break;
        }
    }
     protected static void options() {
@@ -267,4 +267,138 @@ class Banking{
             e.printStackTrace();
         }
     }
+    protected static void Update(){
+        try(BufferedReader buffer = new BufferedReader(new FileReader("Data.csv"))){
+            System.out.println("To update any detail in your account,you need to reenter all the information again in the form.");
+            Scanner out = new Scanner(System.in);
+            System.out.print("Enter Your Account No.:");
+            int accountno = out.nextInt();
+            System.out.print("Enter Your PIN No.:");
+            int PIN = out.nextInt();
+            ArrayList<Object[]> list = new ArrayList<>();
+            Object[] tempHold;
+            String hold;
+            
+            while((hold = buffer.readLine()) != null){
+                tempHold = hold.split(",");
+                list.add(tempHold);
+            }for(Object[] x : list){
+                    String account = Integer.toString(accountno);
+                    String Pin = Integer.toString(PIN);
+                    if(x[0].equals(account) && x[8].equals(Pin)){
+                        FileWriter file = new FileWriter("Data.csv",true);
+                        data[0] = accountno;
+                        System.out.print("Enter your Name:");
+                        name = out.next().toUpperCase();
+                        data[1] = name;
+                        
+                        data[2] = x[2];
+
+                        System.out.print("Enter your Age:");
+                        age = out.nextInt();
+                        data[3] = age;
+
+                        System.out.print("Enter your Sex:");
+                        Sex = out.next().toUpperCase();
+                        data[4] = Sex;
+
+                        System.out.print("Enter your Address:");
+                        Address = out.next().toUpperCase();
+                        data[5] = Address;
+ 
+                        System.out.print("Enter your phone Number:");
+                        phone = out.nextLong();
+                        data[6] = phone;
+
+                        System.out.print("Enter your Email:");
+                        email = out.next().toUpperCase();
+                        data[7] = email;
+
+                        System.out.print("Create a pin:");
+                        pin = out.nextInt();
+                        data[8] = pin;
+
+                        System.out.print("We'll keep upadating your credit score!!");
+                        data[9] = x[9];
+                        System.out.println("Do you really want to update details!!! as below??? for the account no.:" + accountno);
+                        System.out.println("Name : " + name);
+                        System.out.println("Balance :" + x[2]);
+                        System.out.println("Age :" + age);
+                        System.out.println("Sex :" + Sex);
+                        System.out.println("Address : " + Address);
+                        System.out.println("Phone : " + phone);
+                        System.out.println("Email : " + email);
+                        System.out.println("PIN : " + pin);
+                        System.out.println("CreditSc(can't change)");
+                        System.out.print("Do you Confirm(yes/no): ");
+                        String Confirm = out.next().toUpperCase();
+                        if (Confirm.equals(Confirm)) {
+                            for(Object y : data){
+                            file.append(y+",");
+                        }
+                        file.append("\n");
+                        file.close();
+                        }
+                    }
+                }
+            out.close();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    /*protected static void Delete(){
+        
+        try(BufferedReader file = new BufferedReader(new FileReader("Data.csv"))){
+            ArrayList<Object[]> list = new ArrayList<>();
+            Object[] tempData;
+            String temObj;
+            Scanner  detail = new Scanner(System.in);
+            System.out.print("Enter Your Account No.:");
+            AccountNo = detail.nextInt();
+            System.out.print("Enter Your PIN:");
+            pin = detail.nextInt();
+            while((temObj = file.readLine()) != null){
+                tempData = temObj.split(",");
+                list.add(tempData);
+                for(Object n : tempData){
+                    System.out.println(n);
+                }
+            }
+            for(Object[] x : list){
+                if(x[0].equals(Integer.toString(AccountNo)) && x[8].equals(Integer.toString(pin))){
+                    list.remove(x);
+                }
+                for(Object y : x){
+                    FileWriter write = new FileWriter("DataUpdated.csv",true);
+                    write.append(y+",");
+                }
+            }System.out.print("Through Here!!3");
+            File fiel = new File("Data.csv");
+            String mydta;
+            fiel.delete();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        try(BufferedReader file = new BufferedReader(new FileReader("DataUpdated.csv"))){
+            ArrayList<Object[]> list1 = new ArrayList<>();
+            Object[] tempData;
+            String temObj;
+            System.out.print("Enter Your Account Detail:");
+            while((temObj = file.readLine()) != null){
+                tempData = temObj.split(",");
+                list1.add(tempData);
+            }
+            for(Object[] p : list1){
+                for(Object q : p){
+                    FileWriter write = new FileWriter("DataUpdated.csv",true);
+                    write.append(p+",");
+                }
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }*/
 }
