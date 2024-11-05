@@ -41,7 +41,7 @@ class Banking{
         case 4:Deposit();break;
         case 5:Update();break;
         case 6:create();break;
-        case 7:/*Delete()*/;break;
+        case 7:Delete();break;
        }
    }
     protected static void options() {
@@ -55,6 +55,18 @@ class Banking{
        System.out.println("7.Delete your existing account");
    }
     protected  static void create() {
+        ArrayList<Object[]> list1 = new ArrayList<>();
+        try(BufferedReader buffer = new BufferedReader(new FileReader("Data.csv"))){
+            String[] arr1;
+            String arr;
+            while((arr = buffer.readLine()) != null){
+                arr1 = arr.split(",");
+                list1.add(arr1);
+            }            
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
         String ch = "YES";
         while(!ch.equals("NO")){
             System.out.println("Now We are creating your account just follow the following step and eneter details:");
@@ -67,7 +79,7 @@ class Banking{
 
             System.out.print("Enter your Name:");
             name = scan.next().toUpperCase();
-            data[1] = name;
+            data[1] = name.toUpperCase();
 
             System.out.print("Enter the deposite at opening:");
             Balance = scan.nextInt();
@@ -79,11 +91,11 @@ class Banking{
 
             System.out.print("Enter your Sex:");
             Sex = scan.next().toUpperCase();
-            data[4] = Sex;
+            data[4] = Sex.toUpperCase();
 
             System.out.print("Enter your Address:");
             Address = scan.next().toUpperCase();
-            data[5] = Address;
+            data[5] = Address.toUpperCase();
 
             System.out.print("Enter your phone Number:");
             phone = scan.nextLong();
@@ -91,7 +103,7 @@ class Banking{
 
             System.out.print("Enter your Email:");
             email = scan.next().toUpperCase();
-            data[7] = email;
+            data[7] = email.toUpperCase();
 
             System.out.print("Create a pin:");
             pin = scan.nextInt();
@@ -100,7 +112,7 @@ class Banking{
             System.out.print("We'll keep upadating your credit score!!");
             CreditSc = random.nextInt(0,10);
             data[9] = CreditSc;
-    
+            
             Table.add(data);
             System.out.print("Would you like to create more accounts:");
             ch = scan.next().toUpperCase();
@@ -185,7 +197,8 @@ class Banking{
                     }
                 }
             }
-        pi.close();    
+            pi.close();    
+            raederb.close();
         }
         catch(Exception e){
             e.printStackTrace();
@@ -216,10 +229,12 @@ class Banking{
                     a++;
                 }
             }
+            raederb.close();
         }
         catch(Exception e){
             e.printStackTrace();
         }
+        pi.close();
     }
     protected static  void Deposit(){
         Scanner pi = new Scanner(System.in);
@@ -266,6 +281,7 @@ class Banking{
         catch(Exception e){
             e.printStackTrace();
         }
+        pi.close(); 
     }
     protected static void Update(){
         try(BufferedReader buffer = new BufferedReader(new FileReader("Data.csv"))){
@@ -342,63 +358,73 @@ class Banking{
                     }
                 }
             out.close();
+            buffer.close();
         }
         catch(Exception e){
             e.printStackTrace();
         }
     }
-    /*protected static void Delete(){
-        
-        try(BufferedReader file = new BufferedReader(new FileReader("Data.csv"))){
-            ArrayList<Object[]> list = new ArrayList<>();
-            Object[] tempData;
-            String temObj;
-            Scanner  detail = new Scanner(System.in);
-            System.out.print("Enter Your Account No.:");
-            AccountNo = detail.nextInt();
-            System.out.print("Enter Your PIN:");
-            pin = detail.nextInt();
-            while((temObj = file.readLine()) != null){
-                tempData = temObj.split(",");
-                list.add(tempData);
-                for(Object n : tempData){
-                    System.out.println(n);
-                }
+    protected static void Delete(){
+        ArrayList<Object[]> list = new ArrayList<>();
+        Scanner input = new Scanner(System.in);
+        System.out.print("Enter Your Account No. :");
+        int AccountNo = input.nextInt();
+        System.out.print("Enter Your Account PIN :");
+        int pin = input.nextInt();
+
+        try(BufferedReader buffer = new BufferedReader(new FileReader("Data.csv"))){
+            String Info;
+            while((Info = buffer.readLine()) != null){
+                data = Info.split(",");
+                list.add(data);
             }
+            try(FileWriter write = new FileWriter("DataUpdated.csv",true)){ 
             for(Object[] x : list){
-                if(x[0].equals(Integer.toString(AccountNo)) && x[8].equals(Integer.toString(pin))){
-                    list.remove(x);
+                if(!x[0].equals(Integer.toString(AccountNo)) && !x[8].equals(Integer.toString(pin))){
+                    for(Object y : x){
+                        write.write((String)y+",");
+                    }
+                    write.append("\n");
                 }
-                for(Object y : x){
-                    FileWriter write = new FileWriter("DataUpdated.csv",true);
-                    write.append(y+",");
-                }
-            }System.out.print("Through Here!!3");
-            File fiel = new File("Data.csv");
-            String mydta;
-            fiel.delete();
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
-        try(BufferedReader file = new BufferedReader(new FileReader("DataUpdated.csv"))){
-            ArrayList<Object[]> list1 = new ArrayList<>();
-            Object[] tempData;
-            String temObj;
-            System.out.print("Enter Your Account Detail:");
-            while((temObj = file.readLine()) != null){
-                tempData = temObj.split(",");
-                list1.add(tempData);
             }
-            for(Object[] p : list1){
-                for(Object q : p){
-                    FileWriter write = new FileWriter("DataUpdated.csv",true);
-                    write.append(p+",");
-                }
+            write.close();
+            buffer.close();}
+            catch(Exception e){
+                e.printStackTrace();
+            }
+            try(FileWriter fiel = new FileWriter("Data.csv")){
+                fiel.write("");
+            }
+            catch(Exception e){
+                e.printStackTrace();
             }
         }
         catch(Exception e){
             e.printStackTrace();
         }
-    }*/
+        try(BufferedReader buff = new BufferedReader(new FileReader("DataUpdated.csv"))){
+            ArrayList<Object[]> list2 = new ArrayList<>();
+            Object[] data2;
+            String words;
+            while((words = buff.readLine()) != null){
+                data2 = words.split(",");
+                list2.add(data2);
+            }
+            try(FileWriter newfile = new FileWriter("Data.csv",true)){
+                for(Object[] l : list2){
+                    for(Object t : l){
+                        newfile.write(t + ",");
+                    }
+                    newfile.append("\n");
+                }
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
 }
